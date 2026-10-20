@@ -1,0 +1,24 @@
+{
+  "name": "personal-profile-app",
+  "version": "1.0.0",
+  "description": "A personal profile backend API built with Express.js",
+  "keywords": [
+    "api",
+    "profile",
+    "server"
+  ],
+  "license": "MIT",
+  "author": "alescript",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "jest": "^30.5.2"
+  }
+}
