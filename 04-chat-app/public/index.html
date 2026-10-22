@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="Real-time chat application built with Node.js and the ws package." />
+  <title>Chat App</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2307090d'/><path fill='%234d7cff' d='M31.91 6.584A1 1 0 0 0 31 6c-4.768 0-8.26.889-11 2.844V3h-2v3h-4V3h-2v5.844C9.26 6.889 5.768 6 1 6a1 1 0 0 0-.756 1.654C1.945 9.622 3 11.704 3 16a1 1 0 0 0 1 1c2.768 0 6 1.31 6 5a1.004 1.004 0 0 0 .934.998c.416.03 4.066.39 4.066 4.002a1 1 0 0 0 2 0c0-3.613 3.65-3.973 4.062-4.002A1 1 0 0 0 22 22c0-3.69 3.232-5 6-5a1 1 0 0 0 1-1c0-4.296 1.055-6.378 2.756-8.346a1 1 0 0 0 .153-1.07m-4.894 8.46c-3.385.308-6.553 2.229-6.97 6.079A6.55 6.55 0 0 0 16 23.609a6.55 6.55 0 0 0-4.046-2.486c-.417-3.85-3.585-5.77-6.97-6.079a13.2 13.2 0 0 0-1.939-6.98c4.132.273 7.033 1.428 9.248 3.643A1 1 0 0 0 14 11V8h4v3a1 1 0 0 0 1.707.707c2.215-2.215 5.116-3.37 9.248-3.642a13.2 13.2 0 0 0-1.939 6.98Z'/></svg>" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app__header">
+      <div class="brand">
+        <svg class="brand__mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M0 0h32v32H0z" fill="none" />
+          <path fill="currentColor" d="M31.91 6.584A1 1 0 0 0 31 6c-4.768 0-8.26.889-11 2.844V3h-2v3h-4V3h-2v5.844C9.26 6.889 5.768 6 1 6a1 1 0 0 0-.756 1.654C1.945 9.622 3 11.704 3 16a1 1 0 0 0 1 1c2.768 0 6 1.31 6 5a1.004 1.004 0 0 0 .934.998c.416.03 4.066.39 4.066 4.002a1 1 0 0 0 2 0c0-3.613 3.65-3.973 4.062-4.002A1 1 0 0 0 22 22c0-3.69 3.232-5 6-5a1 1 0 0 0 1-1c0-4.296 1.055-6.378 2.756-8.346a1 1 0 0 0 .153-1.07m-4.894 8.46c-3.385.308-6.553 2.229-6.97 6.079A6.55 6.55 0 0 0 16 23.609a6.55 6.55 0 0 0-4.046-2.486c-.417-3.85-3.585-5.77-6.97-6.079a13.2 13.2 0 0 0-1.939-6.98c4.132.273 7.033 1.428 9.248 3.643A1 1 0 0 0 14 11V8h4v3a1 1 0 0 0 1.707.707c2.215-2.215 5.116-3.37 9.248-3.642a13.2 13.2 0 0 0-1.939 6.98Z" />
+        </svg>
+        <div class="brand__text">
+          <h1 class="brand__title">Chat App</h1>
+          <p class="brand__subtitle">Real-time line &middot; Node.js + ws</p>
+        </div>
+      </div>
+
+      <div class="status" id="status-bar" role="status" aria-live="polite">
+        <span class="status__dot" id="status-dot"></span>
+        <span class="status__label" id="status">Disconnected</span>
+      </div>
+    </header>
+
+    <main class="chatroom">
+      <div
+        class="chat__messages"
+        id="messages"
+        role="log"
+        aria-live="polite"
+        aria-label="Chat messages"
+      ></div>
+
+      <div class="chat__composer" id="input-area">
+        <div class="field">
+          <label class="field__label" for="username-input">Identity</label>
+          <div class="field__row">
+            <input
+              id="username-input"
+              class="field__input"
+              type="text"
+              placeholder="Username"
+              maxlength="20"
+              value="Camper"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+            <button id="connect-btn" class="btn btn--primary" type="button">Connect</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="message-input">Transmission</label>
+          <div class="field__row">
+            <input
+              id="message-input"
+              class="field__input"
+              type="text"
+              placeholder="Type a message&hellip;"
+              maxlength="1000"
+              autocomplete="off"
+              spellcheck="false"
+              disabled
+            />
+            <button id="send-btn" class="btn btn--accent" type="button" disabled>Send</button>
+          </div>
+        </div>
+
+        <p class="chat__hint">
+          <kbd>Enter</kbd> sends &middot; up to 1000 characters &middot; max 20 for the identity
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
